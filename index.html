@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zones de Risc – L'Ametlla de Mar</title>
+    <!-- Leaflet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        /* ESTIL PROFESSIONAL */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(to bottom, #f0f4f8, #d9e2ec);
+            color: #2c3e50;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #2c3e50;
+            color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        header h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 8px;
+        }
+        p {
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+        .instruccions {
+            font-weight: 600;
+            color: #2980b9;
+            background: #ebf3fd;
+            padding: 12px;
+            border-left: 5px solid #3498db;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+
+        /* LLEGENDA */
+        .llegenda {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px 0;
+            font-weight: 600;
+        }
+        .llegenda-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .color-dot {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            border: 2px solid #000;
+        }
+
+        /* MAPA */
+        #mapa-interactiu {
+            height: 600px;
+            width: 100%;
+            border: 3px solid #2c3e50;
+            border-radius: 12px;
+            margin: 25px 0;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        }
+
+        /* POPUP */
+        .leaflet-popup-content {
+            margin: 12px;
+        }
+        .leaflet-popup-content img {
+            width: 100%;
+            max-width: 280px;
+            height: auto;
+            border-radius: 8px;
+            margin: 8px 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .leaflet-popup-content b {
+            color: #2c3e50;
+            font-size: 1.1rem;
+        }
+        .leaflet-popup-content p {
+            margin: 6px 0;
+            font-size: 0.95rem;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            header h1 { font-size: 1.5rem; }
+            #mapa-interactiu { height: 400px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Mapa de Zones de Risc – L'Ametlla de Mar</h1>
+    </header>
+
+    <div class="container">
+        <h2>Zones amb més risc delictiu</h2>
+
+        <!-- LLEGENDA -->
+        <div class="llegenda">
+            <div class="llegenda-item">
+                <div class="color-dot" style="background:#e74c3c;"></div>
+                <span>Alt risc</span>
+            </div>
+            <div class="llegenda-item">
+                <div class="color-dot" style="background:#f1c40f; border-color:#000;"></div>
+                <span>Risc mitjà</span>
+            </div>
+        </div>
+
+        <!-- INSTRUCCIONS -->
+        <p class="instruccions">
+            Mapa interactiu de les zones amb més risc de l'Ametlla de Mar. Fes click als marcadors per veure més informació!
+        </p>
+
+        <!-- MAPA -->
+        <div id="mapa-interactiu"></div>
+    </div>
+
+    <script>
+        // MAPA
+        const map = L.map('mapa-interactiu', {
+            center: [40.8845, 0.8025],
+            zoom: 15,
+            minZoom: 14,
+            maxZoom: 19,
+            zoomControl: true,
+            scrollWheelZoom: true
+        });
+
+        L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+            attribution: '© Esri'
+        }).addTo(map);
+
+        // ZONES AMB IMATGES LOCALS
+        const zones = [
+            { lat: 40.882604, lng: 0.801643, color: 'red', nom: "Zona 1 - Plaça Canó", desc: "Plaça on no hi ha veïns, poc il·luminada i amb poca afluència de gent.", img: "zona1.jpg" },
+            { lat: 40.884961, lng: 0.805223, color: 'yellow', nom: "Zona 2 - Bancs Carrer de Jacint Verdaguer", desc: "Lloc parcialment ocult per arbres on les vies de sortida són molt visibles.", img: "zona2.jpg" },
+            { lat: 40.884895, lng: 0.804052, color: 'red', nom: "Zona 3 - Carrer Miguel de Cervantes", desc: "Carrer antic de pubs i clubs d'oci nocturn, poc il·luminat i amb poca afluència de gent.", img: "zona3.jpg" },
+            { lat: 40.886968, lng: 0.803220, color: 'red', nom: "Zona 4 - Salfuro", desc: "Carreró gens il·luminat i sense afluència de gent.", img: "zona4.jpg" },
+            { lat: 40.886099, lng: 0.800629, color: 'yellow', nom: "Zona 5 - Estació de tren", desc: "Lloc amb molta afluència de gent on es fa difícil la identificació personal.", img: "zona5.jpg" }
+        ];
+
+        zones.forEach(z => {
+            // Cercle
+            const fillColor = z.color === 'red' ? 'rgba(231,76,60,0.4)' : 'rgba(241,196,15,0.4)';
+            L.circle([z.lat, z.lng], {
+                color: z.color === 'yellow' ? '#000' : '#e74c3c',
+                fillColor: fillColor,
+                fillOpacity: 0.4,
+                radius: 80
+            }).addTo(map);
+
+            // Marcador
+            const icon = L.divIcon({
+                html: `<div style="background:${z.color === 'red' ? '#e74c3c' : '#f1c40f'}; width:18px; height:18px; border-radius:50%; border:3px solid #fff; box-shadow:0 0 8px rgba(0,0,0,0.3);"></div>`,
+                iconSize: [24, 24],
+                iconAnchor: [12, 12]
+            });
+
+            L.marker([z.lat, z.lng], { icon })
+                .bindPopup(`
+                    <b>${z.nom}</b><br>
+                    <img src="${z.img}" alt="${z.nom}" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <p style="display:none; color:#999; font-style:italic;">Imatge no disponible</p>
+                    <p><strong>Descripció:</strong> ${z.desc}</p>
+                `, { maxWidth: 320 })
+                .addTo(map);
+        });
+    </script>
+
+</body>
+</html>
