@@ -34,13 +34,6 @@
             padding: 30px;
             box-shadow: 0 8px 25px rgba(0,0,0,0.1);
         }
-        h2, h3 {
-            color: #2c3e50;
-            margin-bottom: 15px;
-            font-size: 1.5rem;
-            border-bottom: 2px solid #3498db;
-            padding-bottom: 8px;
-        }
         .instruccions {
             font-weight: 600;
             color: #2980b9;
@@ -80,11 +73,15 @@
             margin-top: 60px;
             text-align: center;
         }
-        .seccio-pdf h3 { font-size: 1.6rem; margin-bottom: 25px; }
+        .seccio-pdf h3 {
+            color: #2c3e50;
+            font-size: 1.6rem;
+            margin-bottom: 25px;
+        }
         #pdf-viewer {
             width: 100%;
             max-width: 900px;
-            height: 800px;
+            height: 900px;
             margin: 0 auto;
             border: 3px solid #3498db;
             border-radius: 10px;
@@ -112,14 +109,6 @@
 
     <div class="container">
 
-        <!-- PRIMERA PREGUNTA -->
-        <div class="seccio">
-            <h3>Primera Pregunta</h3>
-            <p>
-                El mapa següent és un mapa subjectiu on es marquen les zones de risc de l’Ametlla de Mar. Per poder senyalar aquests punts, s’utilitzen dos tipus: <strong>risc mitjà</strong> (color groc) i <strong>alt risc</strong> (color vermell). A part d’això, també hi ha uns marcadors a cada zona que ofereixen informació addicional, com imatges i una breu descripció per poder donar a entendre perquè és una zona de risc de delicte.
-            </p>
-        </div>
-
         <div class="llegenda">
             <div class="llegenda-item">
                 <div class="color-dot" style="background:#e74c3c;"></div>
@@ -137,7 +126,7 @@
 
         <div id="mapa-interactiu"></div>
 
-        <!-- VISUALITZACIÓ DEL PDF (SOLUCIÓ SENZILLA I SEGURA) -->
+        <!-- PDF AMB TOTES LES PREGUNTES -->
         <div class="seccio-pdf">
             <h3>Preguntes per desenvolupar la PAC2</h3>
             <iframe id="pdf-viewer" src="preguntesperdesenvoluparPAC2.pdf" type="application/pdf">
@@ -155,7 +144,6 @@
     </div>
 
     <script>
-        // MAPA
         const map = L.map('mapa-interactiu', {
             center: [40.8845, 0.8025],
             zoom: 15,
