@@ -95,9 +95,31 @@
             color: #c0392b;
             font-size: 1.1rem;
         }
+
+        /* FIX IMATGES POPUP */
+        .leaflet-popup-content-wrapper {
+            padding: 1px;
+            border-radius: 12px;
+        }
+        .leaflet-popup-content {
+            margin: 12px;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+        .leaflet-popup-content img {
+            width: 100% !important;
+            height: auto !important;
+            max-width: 260px !important;
+            border-radius: 8px;
+            margin: 10px 0;
+            display: block;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        }
+
         @media (max-width: 768px) {
             #mapa-interactiu { height: 400px; }
             #pdf-viewer { height: 600px; }
+            .leaflet-popup-content img { max-width: 200px !important; }
         }
     </style>
 </head>
@@ -126,7 +148,7 @@
 
         <div id="mapa-interactiu"></div>
 
-        <!-- PDF AMB TOTES LES PREGUNTES -->
+        <!-- PDF -->
         <div class="seccio-pdf">
             <h3>Preguntes per desenvolupar la PAC2</h3>
             <iframe id="pdf-viewer" src="preguntesperdesenvoluparPAC2.pdf" type="application/pdf">
@@ -186,7 +208,10 @@
                     <img src="${z.img}" alt="${z.nom}" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
                     <p style="display:none; color:#999; font-style:italic;">Imatge no disponible</p>
                     <p><strong>Descripció:</strong> ${z.desc}</p>
-                `, { maxWidth: 320 })
+                `, { 
+                    maxWidth: 300,
+                    minWidth: 260
+                })
                 .addTo(map);
         });
     </script>
