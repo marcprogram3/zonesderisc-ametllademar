@@ -7,6 +7,8 @@
     <!-- Leaflet -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- PDF.js per visualitzar el PDF dins la pàgina -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.7.76/pdf.min.mjs" type="module"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -76,48 +78,53 @@
             margin: 30px 0;
             box-shadow: 0 6px 20px rgba(0,0,0,0.15);
         }
-        .seccio {
-            margin-top: 50px;
-            padding: 30px;
-            background: #f8f9fa;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        .seccio-pdf {
+            margin-top: 60px;
+            text-align: center;
         }
-        .seccio h3 {
+        .seccio-pdf h3 {
             color: #2c3e50;
             font-size: 1.6rem;
             margin-bottom: 20px;
-            border-bottom: 3px solid #3498db;
-            padding-bottom: 10px;
         }
-        .seccio p {
-            margin-bottom: 18px;
-            font-size: 1.05rem;
-            text-align: justify;
-        }
-        .seccio strong { color: #2980b9; }
-        .nota-final {
-            font-size: 0.95rem;
-            color: #7f8c8d;
-            font-style: italic;
-            margin-top: 25px;
-            padding: 15px;
-            background: #ebf3fd;
-            border-radius: 6px;
-            border-left: 4px solid #3498db;
-        }
-        .leaflet-popup-content img {
+        #pdf-container {
             width: 100%;
-            max-width: 280px;
+            max-width: 900px;
+            margin: 0 auto;
+            border: 2px solid #3498db;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        }
+        #pdf-canvas {
+            display: block;
+            width: 100%;
             height: auto;
-            border-radius: 8px;
-            margin: 8px 0;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .pdf-controls {
+            margin-top: 15px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+        .pdf-controls button {
+            padding: 10px 20px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .pdf-controls button:hover { background: #2980b9; }
+        .pdf-controls span {
+            font-weight: 600;
+            color: #2c3e50;
+            line-height: 2.2;
         }
         @media (max-width: 768px) {
-            header h1 { font-size: 1.5rem; }
             #mapa-interactiu { height: 400px; }
-            .seccio { padding: 20px; }
+            .seccio-pdf { padding: 20px; }
         }
     </style>
 </head>
@@ -154,29 +161,23 @@
 
         <div id="mapa-interactiu"></div>
 
-        <!-- SEGONA PREGUNTA -->
-        <div class="seccio">
-            <h3>Segona Pregunta</h3>
-            <p>
-                Un cop analitzades les dades oficials publicades pel Ministeri de l’Interior i el cos de Mossos d’Esquadra de l’any 2024 i el primer semestre del 2025, es pot apreciar que es fa un esment de la criminalitat a la província de Tarragona, on s’ha experimentat un augment del 2,7% durant el 2024 (correspon a infraccions penals) i una reducció del 7,6% al primer semestre del 2025 (correspon als fets delictius). Pel que fa a l’Ametlla de Mar, tot i que no es disposen de dades oficials especialment del municipi, les actuacions policials permeten identificar els quins delictes són més freqüents.
-            </p>
-            <p>
-                Els principals fets delictius que es duuen a terme en aquest municipi, corresponen als furts comesos a l’interior dels vehicles estacionats a platges o aparcaments públics, els quals representen un 60% dels fets delictius de la zona. Durant l’estiu del 2025, els Mossos d’Esquadra van resoldre set robatoris en vehicles estacionats prop de les platges de l’Ametlla de Mar i van detenir als pressumptes autors. A més a més, els robatoris amb força en domicilis i finques rústiques han patit un augment del 211% entre els municipis de l’Ampolla i l’Ametlla de Mar. Tanmateix, també s’han registrat una quarantena de denúncies per entrades il·legals a segones residències i masies, com podrien ser la zona de Perelló-Mar, Tres Cales i Calafat. No obstant això, les agressions sexuals també han patit un augment del 8,4%, tot i que segons les estadístiques continua sent baix.
-            </p>
-            <p>
-                En comparació al mapa subjectiu elaborat, s’observen tant coincidències com discrepàncies. Primer de tot, els punts coincidents són les zones amb alta afluència de gent, com és l’estació de tren, deguda la poca presència policial, i la zona 3 (carrer Miguel de Cervantes), on tot el carrer és zona blava i es pot aparcar, fet que es relaciona amb el percentatge més alt de delictes ocorreguts a la zona. En canvi, també hi ha discrepàncies, ja que les zones 1,2 i 4 marcades com a risc mitjà o alt, no apareixen als informes policials. Aquestes àrees de poca afluència i solitud, presenten un volum molt baix de denúncies, ja que els infractors podrien evitar-les per no ser vistos fàcilment.
-            </p>
-            <p>
-                <strong>En conclusió,</strong> podríem dir que el mapa subjectiu coincideix en un 40% amb les dades reals i objectives, especialment a zones com el turisme i l’oci. Aquests fets demostren que la percepció personal pot ser molt diferent respecte les dades oficials, i posa en evidència la importància d’utilitzar fonts oficials.
-            </p>
-            <div class="nota-final">
-                <strong>Nota sobre el qüestionari realitzat:</strong> Les respostes dels veïns han confirmat plenament el mapa subjectiu, especialment en les zones 1, 2 i 4 (fosques i solitàries), on la sensació d’inseguretat és molt alta tot i el baix nombre de delictes oficials registrats.
+        <!-- VISUALITZACIÓ DEL PDF -->
+        <div class="seccio-pdf">
+            <h3>Preguntes per desenvolupar la PAC2</h3>
+            <div id="pdf-container">
+                <canvas id="pdf-canvas"></canvas>
+            </div>
+            <div class="pdf-controls">
+                <button id="prev-page">◄ Anterior</button>
+                <span>Pàgina <span id="page-num">1</span> de <span id="page-count">?</span></span>
+                <button id="next-page">Següent ►</button>
             </div>
         </div>
 
     </div>
 
-    <script>
+    <script type="module">
+        // MAPA
         const map = L.map('mapa-interactiu', {
             center: [40.8845, 0.8025],
             zoom: 15,
@@ -221,6 +222,75 @@
                     <p><strong>Descripció:</strong> ${z.desc}</p>
                 `, { maxWidth: 320 })
                 .addTo(map);
+        });
+
+        // VISUALITZACIÓ DEL PDF (preguntesperdesenvoluparPAC2.pdf)
+        const pdfUrl = 'preguntesperdesenvoluparPAC2.pdf';
+        let pdfDoc = null;
+        let pageNum = 1;
+        let pageRendering = false;
+        let pageNumPending = null;
+
+        const scale = 1.5;
+        const canvas = document.getElementById('pdf-canvas');
+        const ctx = canvas.getContext('2d');
+
+        function renderPage(num) {
+            pageRendering = true;
+            pdfDoc.getPage(num).then(page => {
+                const viewport = page.getViewport({ scale });
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+
+                const renderContext = {
+                    canvasContext: ctx,
+                    viewport: viewport
+                };
+                const renderTask = page.render(renderContext);
+                renderTask.promise.then(() => {
+                    pageRendering = false;
+                    if (pageNumPending !== null) {
+                        renderPage(pageNumPending);
+                        pageNumPending = null;
+                    }
+                });
+            });
+
+            document.getElementById('page-num').textContent = num;
+        }
+
+        function queueRenderPage(num) {
+            if (pageRendering) {
+                pageNumPending = num;
+            } else {
+                renderPage(num);
+            }
+        }
+
+        document.getElementById('prev-page').addEventListener('click', () => {
+            if (pageNum <= 1) return;
+            pageNum--;
+            queueRenderPage(pageNum);
+        });
+
+        document.getElementById('next-page').addEventListener('click', () => {
+            if (pageNum >= pdfDoc.numPages) return;
+            pageNum++;
+            queueRenderPage(pageNum);
+        });
+
+        // Carrega el PDF
+        pdfjsLib.getDocument(pdfUrl).promise.then(pdf => {
+            pdfDoc = pdf;
+            document.getElementById('page-count').textContent = pdfDoc.numPages;
+            renderPage(pageNum);
+        }).catch(err => {
+            canvas.style.display = 'none';
+            document.getElementById('pdf-container').innerHTML = `
+                <p style="color:#e74c3c; padding:30px;">
+                    No s'ha pogut carregar el PDF. Assegura't que el fitxer <strong>preguntesperdesenvoluparPAC2.pdf</strong> està a la mateixa carpeta que index.html
+                </p>
+            `;
         });
     </script>
 
