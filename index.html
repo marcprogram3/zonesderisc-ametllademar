@@ -7,8 +7,6 @@
     <!-- Leaflet -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <!-- PDF.js per visualitzar el PDF dins la pàgina -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.7.76/pdf.min.mjs" type="module"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -36,7 +34,7 @@
             padding: 30px;
             box-shadow: 0 8px 25px rgba(0,0,0,0.1);
         }
-        h2 {
+        h2, h3 {
             color: #2c3e50;
             margin-bottom: 15px;
             font-size: 1.5rem;
@@ -82,49 +80,27 @@
             margin-top: 60px;
             text-align: center;
         }
-        .seccio-pdf h3 {
-            color: #2c3e50;
-            font-size: 1.6rem;
-            margin-bottom: 20px;
-        }
-        #pdf-container {
+        .seccio-pdf h3 { font-size: 1.6rem; margin-bottom: 25px; }
+        #pdf-viewer {
             width: 100%;
             max-width: 900px;
+            height: 800px;
             margin: 0 auto;
-            border: 2px solid #3498db;
+            border: 3px solid #3498db;
             border-radius: 10px;
-            overflow: hidden;
             box-shadow: 0 6px 20px rgba(0,0,0,0.15);
         }
-        #pdf-canvas {
-            display: block;
-            width: 100%;
-            height: auto;
-        }
-        .pdf-controls {
-            margin-top: 15px;
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-        }
-        .pdf-controls button {
-            padding: 10px 20px;
-            background: #3498db;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-        }
-        .pdf-controls button:hover { background: #2980b9; }
-        .pdf-controls span {
-            font-weight: 600;
-            color: #2c3e50;
-            line-height: 2.2;
+        .error-pdf {
+            padding: 40px;
+            background: #fdf2f2;
+            border: 2px solid #e74c3c;
+            border-radius: 10px;
+            color: #c0392b;
+            font-size: 1.1rem;
         }
         @media (max-width: 768px) {
             #mapa-interactiu { height: 400px; }
-            .seccio-pdf { padding: 20px; }
+            #pdf-viewer { height: 600px; }
         }
     </style>
 </head>
@@ -161,22 +137,24 @@
 
         <div id="mapa-interactiu"></div>
 
-        <!-- VISUALITZACIÓ DEL PDF -->
+        <!-- VISUALITZACIÓ DEL PDF (SOLUCIÓ SENZILLA I SEGURA) -->
         <div class="seccio-pdf">
             <h3>Preguntes per desenvolupar la PAC2</h3>
-            <div id="pdf-container">
-                <canvas id="pdf-canvas"></canvas>
-            </div>
-            <div class="pdf-controls">
-                <button id="prev-page">◄ Anterior</button>
-                <span>Pàgina <span id="page-num">1</span> de <span id="page-count">?</span></span>
-                <button id="next-page">Següent ►</button>
-            </div>
+            <iframe id="pdf-viewer" src="preguntesperdesenvoluparPAC2.pdf" type="application/pdf">
+                <div class="error-pdf">
+                    <p><strong>No es pot mostrar el PDF.</strong><br>
+                    El teu navegador no suporta visualització integrada de PDF o el fitxer no es troba a la carpeta.<br><br>
+                    <a href="preguntesperdesenvoluparPAC2.pdf" target="_blank" style="color:#3498db; font-weight:600;">
+                        ► Fes clic aquí per obrir el PDF en una pestanya nova
+                    </a>
+                    </p>
+                </div>
+            </iframe>
         </div>
 
     </div>
 
-    <script type="module">
+    <script>
         // MAPA
         const map = L.map('mapa-interactiu', {
             center: [40.8845, 0.8025],
@@ -222,75 +200,6 @@
                     <p><strong>Descripció:</strong> ${z.desc}</p>
                 `, { maxWidth: 320 })
                 .addTo(map);
-        });
-
-        // VISUALITZACIÓ DEL PDF (preguntesperdesenvoluparPAC2.pdf)
-        const pdfUrl = 'preguntesperdesenvoluparPAC2.pdf';
-        let pdfDoc = null;
-        let pageNum = 1;
-        let pageRendering = false;
-        let pageNumPending = null;
-
-        const scale = 1.5;
-        const canvas = document.getElementById('pdf-canvas');
-        const ctx = canvas.getContext('2d');
-
-        function renderPage(num) {
-            pageRendering = true;
-            pdfDoc.getPage(num).then(page => {
-                const viewport = page.getViewport({ scale });
-                canvas.height = viewport.height;
-                canvas.width = viewport.width;
-
-                const renderContext = {
-                    canvasContext: ctx,
-                    viewport: viewport
-                };
-                const renderTask = page.render(renderContext);
-                renderTask.promise.then(() => {
-                    pageRendering = false;
-                    if (pageNumPending !== null) {
-                        renderPage(pageNumPending);
-                        pageNumPending = null;
-                    }
-                });
-            });
-
-            document.getElementById('page-num').textContent = num;
-        }
-
-        function queueRenderPage(num) {
-            if (pageRendering) {
-                pageNumPending = num;
-            } else {
-                renderPage(num);
-            }
-        }
-
-        document.getElementById('prev-page').addEventListener('click', () => {
-            if (pageNum <= 1) return;
-            pageNum--;
-            queueRenderPage(pageNum);
-        });
-
-        document.getElementById('next-page').addEventListener('click', () => {
-            if (pageNum >= pdfDoc.numPages) return;
-            pageNum++;
-            queueRenderPage(pageNum);
-        });
-
-        // Carrega el PDF
-        pdfjsLib.getDocument(pdfUrl).promise.then(pdf => {
-            pdfDoc = pdf;
-            document.getElementById('page-count').textContent = pdfDoc.numPages;
-            renderPage(pageNum);
-        }).catch(err => {
-            canvas.style.display = 'none';
-            document.getElementById('pdf-container').innerHTML = `
-                <p style="color:#e74c3c; padding:30px;">
-                    No s'ha pogut carregar el PDF. Assegura't que el fitxer <strong>preguntesperdesenvoluparPAC2.pdf</strong> està a la mateixa carpeta que index.html
-                </p>
-            `;
         });
     </script>
 
