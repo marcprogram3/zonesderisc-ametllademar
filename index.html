@@ -76,19 +76,35 @@
             margin: 30px 0;
             box-shadow: 0 6px 20px rgba(0,0,0,0.15);
         }
-        .seccio-resposta {
+        .seccio {
             margin-top: 50px;
-            padding: 25px;
+            padding: 30px;
             background: #f8f9fa;
-            border-left: 6px solid #3498db;
-            border-radius: 8px;
-            font-size: 1.05rem;
-            line-height: 1.8;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
         }
-        .seccio-resposta h3 {
+        .seccio h3 {
             color: #2c3e50;
+            font-size: 1.6rem;
             margin-bottom: 20px;
-            font-size: 1.4rem;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        .seccio p {
+            margin-bottom: 18px;
+            font-size: 1.05rem;
+            text-align: justify;
+        }
+        .seccio strong { color: #2980b9; }
+        .nota-final {
+            font-size: 0.95rem;
+            color: #7f8c8d;
+            font-style: italic;
+            margin-top: 25px;
+            padding: 15px;
+            background: #ebf3fd;
+            border-radius: 6px;
+            border-left: 4px solid #3498db;
         }
         .leaflet-popup-content img {
             width: 100%;
@@ -101,6 +117,7 @@
         @media (max-width: 768px) {
             header h1 { font-size: 1.5rem; }
             #mapa-interactiu { height: 400px; }
+            .seccio { padding: 20px; }
         }
     </style>
 </head>
@@ -111,7 +128,14 @@
     </header>
 
     <div class="container">
-        <h2>Zones amb més risc delictiu (mapa subjectiu)</h2>
+
+        <!-- PRIMERA PREGUNTA -->
+        <div class="seccio">
+            <h3>Primera Pregunta</h3>
+            <p>
+                El mapa següent és un mapa subjectiu on es marquen les zones de risc de l’Ametlla de Mar. Per poder senyalar aquests punts, s’utilitzen dos tipus: <strong>risc mitjà</strong> (color groc) i <strong>alt risc</strong> (color vermell). A part d’això, també hi ha uns marcadors a cada zona que ofereixen informació addicional, com imatges i una breu descripció per poder donar a entendre perquè és una zona de risc de delicte.
+            </p>
+        </div>
 
         <div class="llegenda">
             <div class="llegenda-item">
@@ -130,9 +154,9 @@
 
         <div id="mapa-interactiu"></div>
 
-        <!-- RESPOSTA A LA PREGUNTA 2 -->
-        <div class="seccio-resposta">
-            <h3>2. Comparació amb dades oficials (2024-2025)</h3>
+        <!-- SEGONA PREGUNTA -->
+        <div class="seccio">
+            <h3>Segona Pregunta</h3>
             <p>
                 Un cop analitzades les dades oficials publicades pel Ministeri de l’Interior i el cos de Mossos d’Esquadra de l’any 2024 i el primer semestre del 2025, es pot apreciar que es fa un esment de la criminalitat a la província de Tarragona, on s’ha experimentat un augment del 2,7% durant el 2024 (correspon a infraccions penals) i una reducció del 7,6% al primer semestre del 2025 (correspon als fets delictius). Pel que fa a l’Ametlla de Mar, tot i que no es disposen de dades oficials especialment del municipi, les actuacions policials permeten identificar els quins delictes són més freqüents.
             </p>
@@ -145,10 +169,11 @@
             <p>
                 <strong>En conclusió,</strong> podríem dir que el mapa subjectiu coincideix en un 40% amb les dades reals i objectives, especialment a zones com el turisme i l’oci. Aquests fets demostren que la percepció personal pot ser molt diferent respecte les dades oficials, i posa en evidència la importància d’utilitzar fonts oficials.
             </p>
-            <p style="font-size:0.9rem; color:#7f8c8d; margin-top:20px;">
-                <em>Nota: Les respostes al qüestionari de percepció ciutadana han confirmat aquesta tendència: la majoria de veïns senten més por precisament a les zones 1, 2 i 4 (fosques i solitàries), tot i ser les menys delictives segons les dades oficials.</em>
-            </p>
+            <div class="nota-final">
+                <strong>Nota sobre el qüestionari realitzat:</strong> Les respostes dels veïns han confirmat plenament el mapa subjectiu, especialment en les zones 1, 2 i 4 (fosques i solitàries), on la sensació d’inseguretat és molt alta tot i el baix nombre de delictes oficials registrats.
+            </div>
         </div>
+
     </div>
 
     <script>
